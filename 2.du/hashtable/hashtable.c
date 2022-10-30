@@ -32,6 +32,9 @@ int get_hash(char *key) {
  * Inicializácia tabuľky — zavolá sa pred prvým použitím tabuľky.
  */
 void ht_init(ht_table_t *table) {
+  for(int i = 0; i < HT_SIZE; i++){
+    *table[i] = NULL;
+  }
 }
 
 /*
@@ -41,6 +44,12 @@ void ht_init(ht_table_t *table) {
  * hodnotu NULL.
  */
 ht_item_t *ht_search(ht_table_t *table, char *key) {
+  ht_item_t *tmp = (*table)[get_hash(key)];
+  for(; tmp; ){
+    if(strcmp(key, tmp->key) == 0){
+      return tmp;
+    }
+  }
   return NULL;
 }
 
@@ -53,6 +62,7 @@ ht_item_t *ht_search(ht_table_t *table, char *key) {
  * synonym zvoľte najefektívnejšiu možnosť a vložte prvok na začiatok zoznamu.
  */
 void ht_insert(ht_table_t *table, char *key, float value) {
+
 }
 
 /*
