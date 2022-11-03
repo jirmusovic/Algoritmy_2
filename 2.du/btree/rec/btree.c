@@ -18,6 +18,7 @@
  * možné toto detegovať vo funkcii.
  */
 void bst_init(bst_node_t **tree) {
+	*tree = NULL;
 }
 
 /*
@@ -30,7 +31,19 @@ void bst_init(bst_node_t **tree) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 bool bst_search(bst_node_t *tree, char key, int *value) {
-  return false;
+	if(tree != NULL){
+		if(tree->key == key){
+			*value = tree->value;
+			return true;
+		}
+		else if(tree->key > key){
+			return bst_search(tree->left, key, value);
+		}
+		else if(tree->key < key){
+			return bst_search(tree->right, key, value);
+		}
+	}
+	return false;
 }
 
 /*
@@ -45,6 +58,24 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_insert(bst_node_t **tree, char key, int value) {
+	if((*tree) == NULL){
+		bst_node_t *tmp = malloc(sizeof(bst_node_t));
+		if(tmp == NULL){
+			return;
+		}
+		tmp->key = key;
+		tmp->value = value;
+		tmp->left = NULL;
+		tmp->right = NULL;
+		*tree = tmp;
+	}
+	else if(key < (*tree)->key){
+		bst_insert(&(*tree)->left, key, value);
+	}
+	else if(key > (*tree)->key){
+		bst_insert(&(*tree)->right, key, value);
+	}
+	else (*tree)->value = value;
 }
 
 /*
@@ -97,7 +128,12 @@ void bst_dispose(bst_node_t **tree) {
  *
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
-void bst_preorder(bst_node_t *tree) {
+void bst_preorder(bst_node_t *tree) {	
+	if(tree != NULL){
+		bst_print_node(tree);
+		bst_preorder(tree->left);
+		bst_preorder(tree->right);
+	}
 }
 
 /*
@@ -108,6 +144,11 @@ void bst_preorder(bst_node_t *tree) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_inorder(bst_node_t *tree) {
+	if(tree != NULL){
+		bst_preorder(tree->left);
+		bst_print_node(tree);
+		bst_preorder(tree->right);
+	}
 }
 /*
  * Postorder prechod stromom.
@@ -117,4 +158,9 @@ void bst_inorder(bst_node_t *tree) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_postorder(bst_node_t *tree) {
+	if(tree != NULL){
+		bst_preorder(tree->left);
+		bst_preorder(tree->right);
+		bst_print_node(tree);
+	}
 }

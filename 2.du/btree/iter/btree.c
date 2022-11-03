@@ -20,9 +20,7 @@
  * možné toto detegovať vo funkcii.
  */
 void bst_init(bst_node_t **tree) {
-  if(*tree != NULL){
-    *tree = malloc(sizeof(struct bst_node));
-  }
+  *tree = NULL;
 }
 
 /*
@@ -35,6 +33,22 @@ void bst_init(bst_node_t **tree) {
  * Funkciu implementujte iteratívne bez použitia vlastných pomocných funkcií.
  */
 bool bst_search(bst_node_t *tree, char key, int *value) {
+  bool search = false;
+  if(tree != NULL){
+    while(search != false){
+      if(tree->key == key){
+        *value = tree->value;
+        search = true;
+      }
+      else{
+        if(key < tree->key){
+          tree = tree->left;
+        }
+        else tree = tree->right;
+      }
+    }
+    return search;
+  }
   return false;
 }
 
@@ -50,6 +64,44 @@ bool bst_search(bst_node_t *tree, char key, int *value) {
  * Funkciu implementujte iteratívne bez použitia vlastných pomocných funkcií.
  */
 void bst_insert(bst_node_t **tree, char key, int value) {
+  bool found = false;
+  bst_node_t *tmp;
+  if((*tree) == NULL){
+    tmp = NULL;
+  }
+  else{
+    do{
+      tmp = *tree;
+      if(key < (*tree)->key){
+        *tree = (*tree)->left;
+      }
+      else if(key > (*tree)->key){
+        *tree = (*tree)->right;
+      }
+      else found = true;
+    } while (found == false && (*tree) != NULL);
+  }
+  if(found){
+    tmp->value = value;
+  }
+  else{
+    bst_node_t *NewTmp = malloc(sizeof(bst_node_t));
+		if(tmp == NULL){
+			return;
+		}
+    NewTmp->key = key;
+    NewTmp->value = value;
+    NewTmp->left = NULL;
+    NewTmp->right = NULL;
+    if(tmp = NULL){
+      *tree = NewTmp;
+    }
+    else{
+      if(key < tmp->key){
+        tmp->left = NewTmp;//!!!!!!!!
+      }
+    }
+  }
 }
 
 /*
