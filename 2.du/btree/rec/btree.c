@@ -92,6 +92,16 @@ void bst_insert(bst_node_t **tree, char key, int value) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
+	bst_node_t *tmp;
+	if((*tree)->right != NULL){
+		bst_replace_by_rightmost(target, &(*tree)->right);
+	}else{
+		target->value = (*tree)->value;
+		target->key = (*tree)->key;
+		tmp = *tree;
+		*tree = (*tree)->left;
+		free(tmp);
+	}
 }
 
 /*
@@ -107,6 +117,35 @@ void bst_replace_by_rightmost(bst_node_t *target, bst_node_t **tree) {
  * použitia vlastných pomocných funkcií.
  */
 void bst_delete(bst_node_t **tree, char key) {
+	if((*tree) == NULL){
+		return;
+	}else{
+		if((*tree)->key < key){
+			bst_delete(&(*tree)->right, key);
+		}else{
+			if((*tree)->key > key){
+				bst_delete(&(*tree)->left, key);
+			}else{
+				if((*tree)->left == NULL && (*tree)->right == NULL){
+					free(*tree);
+					*tree = NULL;
+					return;
+				}else{
+					if((*tree)->left != NULL && (*tree)->right != NULL){
+						bst_replace_by_rightmost((*tree), &(*tree)->left);
+					}else{
+						bst_node_t *tmp = *tree;
+						if((*tree)->left != NULL){
+							*tree = (*tree)->left;
+						}else{
+							*tree = (*tree)->right;
+						}
+						free(tmp);
+					}
+				}
+			}
+		}
+	}
 }
 
 /*
@@ -119,6 +158,12 @@ void bst_delete(bst_node_t **tree, char key) {
  * Funkciu implementujte rekurzívne bez použitia vlastných pomocných funkcií.
  */
 void bst_dispose(bst_node_t **tree) {
+	if(*tree != NULL){
+		bst_dispose(&(*tree)->left);
+		bst_dispose(&(*tree)->right);
+		free(*tree);
+		*tree = NULL;
+	}
 }
 
 /*
@@ -145,9 +190,9 @@ void bst_preorder(bst_node_t *tree) {
  */
 void bst_inorder(bst_node_t *tree) {
 	if(tree != NULL){
-		bst_preorder(tree->left);
+		bst_inorder(tree->left);
 		bst_print_node(tree);
-		bst_preorder(tree->right);
+		bst_inorder(tree->right);
 	}
 }
 /*
@@ -159,8 +204,8 @@ void bst_inorder(bst_node_t *tree) {
  */
 void bst_postorder(bst_node_t *tree) {
 	if(tree != NULL){
-		bst_preorder(tree->left);
-		bst_preorder(tree->right);
+		bst_postorder(tree->left);
+		bst_postorder(tree->right);
 		bst_print_node(tree);
 	}
 }
